@@ -2,8 +2,8 @@
 import os
 import subprocess
 import datetime as dt
-import git
 import time
+import random
 
 
 def run_git_script(commit_message, readme_message):
@@ -26,7 +26,7 @@ def run_git_script(commit_message, readme_message):
         git_email = os.environ['GITHUB_EMAIL'],
         git_password = os.environ['GITHUB_PASSWORD'],
         github_url = os.environ['GITHUB_URL'],
-        repository = os.environ['GITHUB_REPOSITORY']
+        repository = os.environ['GITHUB_REPOSITORY'],
         c_message = commit_message,
         r_message = readme_message
     )
@@ -39,4 +39,7 @@ while True:
     current_date = dt.datetime.now()
     readme_message = "Last commit - {0}\n".format(current_date)
     run_git_script("incremented", readme_message)
-    time.sleep(10)
+ 
+    hour_in_seconds = 60 * 60
+    sleep_time = random.randint(hour_in_seconds * 0.8, hour_in_seconds * 1.2)
+    time.sleep(sleep_time)
