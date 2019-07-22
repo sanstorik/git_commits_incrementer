@@ -26,7 +26,7 @@ def run_git_script(commit_message, readme_message):
         git_email = os.environ['GITHUB_EMAIL'],
         git_password = os.environ['GITHUB_PASSWORD'],
         github_url = os.environ['GITHUB_URL'],
-        repository = "git_commits_incrementer",
+        repository = os.environ['GITHUB_REPOSITORY']
         c_message = commit_message,
         r_message = readme_message
     )
