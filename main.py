@@ -43,7 +43,7 @@ def script_sleep_interval(date):
     hour_in_seconds = 60 * 60
     sleep_time = random.randint(hour_in_seconds * 0.8, hour_in_seconds * 1.3)
 
-    is_working_day = current_date.weekday < 5
+    is_working_day = current_date.weekday() < 5
     is_working_hour = current_date.hour >= 9 and current_date.hour <= 18
 
     if not (is_working_day and is_working_hour):
