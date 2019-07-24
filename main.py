@@ -14,15 +14,17 @@ def run_git_script(commit_message, readme_message):
         git clone git@github.com:{git_username}/{repository}.git
     fi
 
-    cd {repository}
-    git checkout master
-    git pull origin master
-    touch README.md
-    echo "{r_message}" > README.md
-    git add "README.md"
-    git commit -a -m {c_message}
-    git push origin master
-    cd --
+    if [ -d "$DIR" ]; then
+        cd {repository}
+        git checkout master
+        git pull origin master
+        touch README.md
+        echo "{r_message}" > README.md
+        git add "README.md"
+        git commit -a -m {c_message}
+        git push origin master
+        cd --
+    fi
     '''.format(
         git_username = os.environ['GITHUB_USERNAME'],
         repository = os.environ['GITHUB_REPOSITORY'],
