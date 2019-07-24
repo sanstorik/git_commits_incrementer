@@ -61,8 +61,7 @@ while True:
  
 
     sleep_time = script_sleep_interval(current_date)
-    DIR = os.environ['GITHUB_REPOSITORY']
-    if not os.path.exists('{dir}'.format(dir = DIR)):
+    if not os.path.exists(os.environ['GITHUB_REPOSITORY']):
         sleep_time = 5
 
     time.sleep(sleep_time)
