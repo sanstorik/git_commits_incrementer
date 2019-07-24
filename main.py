@@ -9,7 +9,7 @@ import uuid
 
 def run_git_script(commit_message, readme_message):
     bash_script = '''
-    DIR = {repository}
+    DIR={repository}
     if [ ! -d "$DIR" ]; then
         git clone git@github.com:{git_username}/{repository}.git
     fi
