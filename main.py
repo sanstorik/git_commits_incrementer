@@ -35,8 +35,8 @@ def run_git_script(commit_message, readme_message):
 
 def script_sleep_interval(date):
     hour_in_seconds = 60 * 60
-    delay_min_multiplier = int(os.environ['MIN_MULTIPLIER'])
-    delay_max_multiplier = int(os.environ['MAX_MULTIPLIER'])
+    delay_min_multiplier = float(os.environ['MIN_MULTIPLIER'])
+    delay_max_multiplier = float(os.environ['MAX_MULTIPLIER'])
 
     sleep_time = random.randint(
         hour_in_seconds * delay_min_multiplier, 
