@@ -24,6 +24,8 @@ def run_git_script(commit_message, readme_message):
         touch README.md
         echo "{r_message}" > README.md
         git add "README.md"
+        git commit -a -m {c_message}
+        git push origin master
         cd --
     fi
     '''.format(
