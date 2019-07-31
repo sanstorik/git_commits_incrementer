@@ -1,11 +1,14 @@
 
 import os
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import random
 import uuid
 
+commits_by_date = {}
+repository_name = "hidden_commit_factory"
+git_username = "sanstorik"
 
 def run_git_script(commit_message, readme_message):
     bash_script = '''
@@ -21,13 +24,11 @@ def run_git_script(commit_message, readme_message):
         touch README.md
         echo "{r_message}" > README.md
         git add "README.md"
-        git commit -a -m {c_message}
-        git push origin master
         cd --
     fi
     '''.format(
-        git_username = os.environ['GITHUB_USERNAME'],
-        repository = os.environ['GITHUB_REPOSITORY'],
+        git_username = git_username,
+        repository =repository_name,
         c_message = commit_message,
         r_message = readme_message
     )
@@ -35,24 +36,21 @@ def run_git_script(commit_message, readme_message):
     subprocess.run(bash_script, shell = True, check = True, executable = '/bin/bash')
 
 
-def script_sleep_interval(date):
-    hour_in_seconds = 60 * 60
-    delay_min_multiplier = float(os.environ['MIN_MULTIPLIER'])
-    delay_max_multiplier = float(os.environ['MAX_MULTIPLIER'])
-
-    sleep_time = random.randint(
-        hour_in_seconds * delay_min_multiplier, 
-        hour_in_seconds * delay_max_multiplier
-    )
-
+def daily_amount_of_commits(date):
     is_working_day = current_date.weekday() < 5
-    is_working_hour = current_date.hour >= 9 and current_date.hour <= 18
+    previous_day_date = (date - timedelta(1))
+    previous_day_commits_count = commits_by_date.get(date_to_str(previous_day_date)) or 0
+    needed_commits = previous_day_commits_count
 
-    if not (is_working_day and is_working_hour):
-        sleep_time *= 2
+    while needed_commits == previous_day_commits_count:
+        commits_range = (12, 20) if is_working_day else (7, 13)
+        needed_commits = random.randint(commits_range[0], commits_range[1])
 
-    return sleep_time
+    return needed_commits
 
+
+def date_to_str(date):
+    return date.strftime('%Y-%m-%d')
 
 
 while True:
@@ -61,9 +59,16 @@ while True:
     readme_message = "{uuid} - {date}".format(uuid = commit_uuid_message, date = current_date)
     run_git_script(uuid.uuid1(), readme_message)
  
+    sleep_time = 0
+    today_date = datetime.today()
+    if date_to_str(today_date) in commits_by_date:
+        daily_commits = commits_by_date[date_to_str(today_date)]
+        sleep_time = float(24 * 60 * 60) / float(daily_commits)
+    else:
+        needed_commits = daily_amount_of_commits(today_date)
+        commits_by_date[date_to_str(today_date)] = needed_commits
 
-    sleep_time = script_sleep_interval(current_date)
-    if not os.path.exists(os.environ['GITHUB_REPOSITORY']):
+    if not os.path.exists(repository_name):
         sleep_time = 5
 
     time.sleep(sleep_time)
