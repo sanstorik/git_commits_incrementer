@@ -61,16 +61,19 @@ while True:
     readme_message = "{uuid} - {date}".format(uuid = commit_uuid_message, date = current_date)
     run_git_script(uuid.uuid1(), readme_message)
  
-    sleep_time = 0
     today_date = datetime.today()
+    sleep_time = 0
+    commits_amount = 0
+
     if date_to_str(today_date) in commits_by_date:
-        daily_commits = commits_by_date[date_to_str(today_date)]
-        sleep_time = float(24 * 60 * 60) / float(daily_commits)
+        commits_amount = commits_by_date[date_to_str(today_date)]
     else:
-        needed_commits = daily_amount_of_commits(today_date)
-        commits_by_date[date_to_str(today_date)] = needed_commits
+        commits_amount = daily_amount_of_commits(today_date)
+        commits_by_date[date_to_str(today_date)] = commits_amount
 
     if not os.path.exists(repository_name):
         sleep_time = 5
+    else:
+        sleep_time = float(24 * 60 * 60) / float(commits_amount)
 
     time.sleep(sleep_time)
